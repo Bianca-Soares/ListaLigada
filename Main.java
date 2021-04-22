@@ -46,7 +46,7 @@ public class Main{
   public static void menu(){
 
     if(lista.getPrimeiro() == null){
-      System.out.println("Escolha:\n 1 - Inserir no Início \n 2 - Inserir no Fim\n 3 - Exibir lista\n ");
+      System.out.println("Escolha:\n 1 - Inserir no Dados");
     }else{
       System.out.println("Escolha:\n 1 - Inserir no Início \n 2 - Inserir no Fim\n 3 - Exibir lista \n 4 - Inserir na posicao\n  5- remover início \n 6 - remover fim \n 7 remover posição ");
     }
