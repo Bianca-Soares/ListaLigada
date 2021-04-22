@@ -1,0 +1,255 @@
+#include<iostream>
+#include<locale.h>
+using namespace std;
+
+typedef struct UserDado // Cria struct para armazenar o valor 
+{
+    float dado;
+	UserDado *proximoDado; //referência para o seu próximo valor
+};
+
+typedef UserDado *tpUserDado; //vai definir os ponteiros que aponta para a estrutura
+
+//==========Variaveis Global=======================================================
+tpUserDado primeiroDado, penultimoDado, ultimoDado, dadoAnterior, dadoSeguinte;// Ponteiro para a struct 
+int total_de_elementos= 0;// numero de elementos
+
+//===============Todos os métodos==================================================
+//Pega o valor que usuario digitar
+float valorDoUsuario()
+{	
+  //system("cls"); // Limpa a tela
+  float valor;
+  cout<<"\nDigite o valor que quer guardar: ";
+  cin>>valor;
+  total_de_elementos++;
+  
+  return valor;
+}
+
+//==========a funcao insere o dado no inicio da lista=============================
+
+void inserirInicio(float novoValor)
+{	
+	tpUserDado novoDado = new UserDado();// nova struct com o novo dado
+	
+	novoDado->dado = novoValor; // Salva o valor que usuario digitou
+	novoDado->proximoDado = primeiroDado; // Primeiro dado passa a ser o proximo
+
+	primeiroDado = novoDado; //e agora o novoDado passa a ser o primeiro da lista
+}
+
+//========== a funcao insere os demais elementos no final.=======================
+
+void inserirNoFinal(float novoValor)
+{
+	tpUserDado dadoAtual = primeiroDado; // Inicio a busca começando pelo primeiro dado
+
+  // while executa com finalizadade de buscar o ultimo dado salvo
+  while (dadoAtual->proximoDado != NULL) // Verifica se existe um proximo dado
+  {
+    dadoAtual = dadoAtual->proximoDado;
+  } // while serve para pegar ultimo dado
+
+   ultimoDado = dadoAtual; //ultimo dado encontrado
+
+  // Cria um novo dado
+  tpUserDado novoDado = new UserDado(); 
+	novoDado->dado = novoValor; // Salva o valor que usuario digitou
+
+	ultimoDado->proximoDado = novoDado;
+  /* 
+  Agora o ultimo dado vai apontar para o novoDado, 
+  sendo assim novoDado e agora e ultimo dado.
+  */
+}
+
+
+void inserirKesima(float novoValor)
+{
+    int posicao, I = 1;
+    cout<<"Informe a posição de "<<total_de_elementos - (total_de_elementos-1)<<" até "<< total_de_elementos - 1<<": ";
+    cin>>posicao;
+    
+	tpUserDado dadoAtual = primeiroDado; // Inicio a busca começando pelo primeiro dado
+
+    if(posicao == 1)
+    {
+        inserirInicio(novoValor);
+    }
+    else
+    {
+        tpUserDado novoDado = new UserDado(); 
+                    
+        novoDado->dado = novoValor; // Salva o valor que usuario digitou
+        
+        
+        while (dadoAtual->proximoDado != NULL) // Verifica se existe um proximo dado
+        {
+            dadoAnterior = dadoAtual;
+            
+            dadoAtual = dadoAtual->proximoDado;// dadoAtual- recebe o dado do proximoDado
+            
+            if(I == posicao-1){
+                cout<< "\né igual I = "<<I<<" posicao= "<<posicao<<"   ";
+                novoDado->proximoDado = dadoAtual;
+                dadoAnterior->proximoDado = novoDado;
+                total_de_elementos++;
+            }
+            
+         I++;  
+        }
+        
+        
+    }
+}
+
+//========== a funcao remove o primeiro elemento =======================
+void removerInicio()
+{	
+    //tpUserDado dadoAuxiliar = primeiroDado;
+    
+	primeiroDado = primeiroDado->proximoDado; 
+	total_de_elementos--;
+    
+}
+
+//========== a funcao remove o ultimo elemento =======================
+void removerFim()
+{	
+    if(total_de_elementos==1)
+    {
+        removerInicio();
+    }else
+    {
+        tpUserDado dadoAuxiliar = primeiroDado->proximoDado;// vai começar com o segundo e terminar com o ultimo
+        penultimoDado = primeiroDado;// vai começar com o primeiro e terminar com o penultimo
+        
+        while (dadoAuxiliar->proximoDado != NULL) // Verifica se existe um proximo dado
+        {
+          dadoAuxiliar = dadoAuxiliar->proximoDado;//serve para pegar ultimo dado
+          penultimoDado = penultimoDado->proximoDado;// serve para pegar penultimo dado
+        } 
+        // penultimoDado->proximoDado= NULL;// o ultimo será NULL
+        
+        ultimoDado = penultimoDado;// o penultimo se torna o ultimo
+         
+        ultimoDado->proximoDado= NULL;
+        ultimoDado= NULL;
+    	total_de_elementos--;
+    }
+}
+
+//===========a funcao vai fazer a exibicao dos elementos da lista================
+
+void exibirlista()
+{	
+  //system("cls"); // Limpa a tela
+	cout<<"\n\nExibicao da lista\n";
+	if(primeiroDado == NULL) //verifica se a lista esta vazia
+  {
+		cout<<"\nLISTA VAZIA\tINSIRA DADOS NA LISTA\n";
+  }
+	else
+  {
+    tpUserDado dadoAtual = primeiroDado;
+
+    cout<<"Primeiro -> "; 
+    do
+    {
+		cout<<dadoAtual->dado<<"  ";
+        dadoAtual = dadoAtual->proximoDado;
+    }while(dadoAtual != NULL);
+    cout<<"<- ultimo \n"; 
+  }
+
+	cout<<"\n";
+	//system("pause") ; //Pausa a exibicao na tela
+}
+
+//=====Imprime o menu para usuario================================================
+
+void menu()
+{
+  //system("cls"); // Limpa a tela
+
+    if(primeiroDado == NULL) // Verifico se o primeiro dado foi criado
+    {	
+		cout<<"\nLista vazia digite 1 para: \n";
+		cout<<"\n- Iniciar a lista \n";
+	}
+    else
+    {
+		cout<<"\nEscolha uma das opcoes abaixo: ";
+        cout<<"\n1 - Inserir no inicio";
+		cout<<"\n2 - Inserir a partir do ultimo";
+        cout<<"\n3 - Exibir a lista";
+        cout<<"\n4 - Remover o primeiro elemento";
+        cout<<"\n5 - Remover o último elemento";
+        cout<<"\n6 - Inserir na K-ésima posição";
+        cout<<"\n7 - Sair\n-> ";
+    }
+
+    int opcaoEscolhida;
+    cin>>opcaoEscolhida; // input do usuario
+
+  float valor;
+  switch (opcaoEscolhida)
+	{
+		case 1:
+			valor = valorDoUsuario(); //a funcao vai retornar o valor que o usuario escolheu
+			inserirInicio(valor); //insere ou inicializa a lista
+			break;
+        case 2:
+			valor = valorDoUsuario();
+			inserirNoFinal(valor); //para inserir valores depois do ultimo inserido anteriormente
+			break;
+			
+        case 3:
+			//system("cls"); // Limpa a tela
+			exibirlista();//exibe a lista
+			break;
+			
+		case 4:
+			removerInicio(); 
+			exibirlista();
+ 			cout<<"\nRemovido!"<<endl;
+			break;
+			
+    	case 5:
+ 			removerFim();
+ 			exibirlista();
+ 			cout<<"\nRemovido!"<<endl;
+			break;
+		case 6:
+		    valor = valorDoUsuario();
+ 			inserirKesima(valor);
+ 			exibirlista();
+ 			cout<<"\nNovo elemento inserido!"<<endl;
+			break;	
+		case 7:
+ 			exit(0);
+			break;
+		default:
+			cout<<"\n-------Opcao invalida-------\n";
+	}
+}
+
+int main()
+{
+ setlocale(LC_ALL,"portuguese");
+
+    primeiroDado = NULL; //lista vazia.
+    do
+    {
+        cout<<"\n\tQuantidade de elementos: "<<total_de_elementos<<endl;
+	    menu(); //Imprimi o menu para usuario escolher
+    }while(true);
+        
+}
+
+
+
+
+
+
